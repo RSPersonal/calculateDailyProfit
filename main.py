@@ -8,8 +8,8 @@ def connect():
     try:
         print("Connecting to database:")
         conn = psycopg2.connect(
-            host=os.getenv("DATABASE_URL", config("DATABASE_URL")),
-            database=os.getenv("DATABASE_NAME", config("DATABASE_NAME")),
+            host=os.getenv("DB_HOST", config("DB_HOST")),
+            database=os.getenv("DB_NAME", config("DB_NAME")),
             user=os.getenv("DB_USERNAME", config("DB_USERNAME")),
             port=os.getenv("DB_PORT", config("DB_PORT")),
             password=os.getenv("DB_PASSWORD", config("DB_PASSWORD")))
@@ -31,6 +31,7 @@ def connect():
                 cur.execute(query)
                 position_profit = cur.fetchone()
                 total_profit += round(position_profit[0])
+
             update_query = f"UPDATE public.database_projects_dailyreturn SET last_price = {total_profit} WHERE portfolio_id = '{portfolio_id}'"
             cur.execute(update_query)
             print({"query": update_query})
