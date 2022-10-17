@@ -1,5 +1,6 @@
 import psycopg2
 import os
+import requests
 from decouple import config
 
 
@@ -32,10 +33,9 @@ def connect():
                 position_profit = cur.fetchone()
                 total_profit += round(position_profit[0])
 
-            update_query = f"UPDATE public.database_projects_dailyreturn SET last_price = {total_profit} WHERE portfolio_id = '{portfolio_id}'"
-            cur.execute(update_query)
-            print({"query": update_query})
-            conn.commit()
+            response = requests.post(f"https://rs-portfolio-services.com/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
+            print(response.json())
+
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
