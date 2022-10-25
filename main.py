@@ -3,6 +3,8 @@ import os
 import requests
 from decouple import config
 
+HOST_URL = os.getenv("HOST_URL", config("HOST_URL"))
+
 
 def connect():
     conn = None
@@ -19,6 +21,7 @@ def connect():
         query = "SELECT id from public.database_projects_portfolio"
         cur.execute(query)
         all_ids = cur.fetchall()
+        print(f"All id: {all_ids}")
 
         for fetched_id in all_ids:
             portfolio_id = fetched_id[0]
@@ -32,10 +35,16 @@ def connect():
                 cur.execute(query)
                 position_profit = cur.fetchone()
                 total_profit += round(position_profit[0])
-
-            response = requests.post(f"https://rs-portfolio-services.com/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
-            print(response.json())
-
+            try:
+                print(
+                    f"requested url: {HOST_URL}/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
+                response = requests.post(
+                    f"daily.{HOST_URL}/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
+                print(response.json())
+            except ConnectionError as e:
+                print(e)
+            except KeyError as e:
+                print(e)
         cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
