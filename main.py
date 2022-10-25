@@ -39,7 +39,7 @@ def connect():
                 print(
                     f"requested url: {HOST_URL}/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
                 response = requests.post(
-                    f"daily.{HOST_URL}/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
+                    f"{HOST_URL}/api/v1/daily-return/new/{portfolio_id}/{total_profit}")
                 print(response.json())
             except ConnectionError as e:
                 print(e)
