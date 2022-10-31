@@ -1,6 +1,7 @@
 import psycopg2
 import os
 import requests
+from datetime import datetime
 from decouple import config
 
 HOST_URL = os.getenv("HOST_URL", config("HOST_URL"))
@@ -17,6 +18,8 @@ def connect():
             port=os.getenv("DB_PORT", config("DB_PORT")),
             password=os.getenv("DB_PASSWORD", config("DB_PASSWORD")))
         cur = conn.cursor()
+        print("Connection success.")
+        print("Timestamp: ", datetime.now())
         print("Getting all portfolio id's")
         query = "SELECT id from public.database_projects_portfolio"
         cur.execute(query)
